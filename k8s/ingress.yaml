@@ -12,6 +12,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/gzip-types: "text/plain,text/css,application/json,application/javascript,text/xml,application/xml,application/xml+rss,text/javascript"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - mbti.lovetest.com.cn  # Replace with your domain
