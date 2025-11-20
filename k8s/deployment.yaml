@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mbti-personality-test
-  namespace: mbti-test
+  namespace: lovetest
   labels:
     app: mbti-personality-test
     version: v1
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:

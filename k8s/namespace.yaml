@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: mbti-test
+  name: lovetest
   labels:
-    name: mbti-test
-    app.kubernetes.io/name: mbti-personality-test
-    app.kubernetes.io/component: namespace
+    name: lovetest
+    managed-by: argocd
