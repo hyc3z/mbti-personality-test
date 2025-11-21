@@ -1,5 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { questions } from '../data/questions';
+import { questionsZh } from '../data/questions.zh';
+import { questionsJa } from '../data/questions.ja';
 import { Trait } from '../types';
 import './QuestionScreen.css';
 
@@ -14,14 +17,27 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   totalQuestions,
   onAnswer,
 }) => {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
   
-  const question = t(`questions.${currentQuestion}.question`);
-  const options = [
-    { text: t(`questions.${currentQuestion}.options.0`), trait: ['E', 'N', 'T', 'J', 'E', 'N', 'T', 'J'][currentQuestion] as Trait },
-    { text: t(`questions.${currentQuestion}.options.1`), trait: ['I', 'S', 'F', 'P', 'I', 'S', 'F', 'P'][currentQuestion] as Trait }
-  ];
+  // Select questions based on current language
+  const getQuestions = () => {
+    switch (i18n.language) {
+      case 'zh':
+        return questionsZh;
+      case 'ja':
+        return questionsJa;
+      default:
+        return questions; // English
+    }
+  };
+  
+  const currentQuestions = getQuestions();
+  const questionData = currentQuestions[currentQuestion];
+  
+  if (!questionData) {
+    return <div>Question not found</div>;
+  }
 
   return (
     <div className="question-screen">
@@ -34,9 +50,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         </div>
       </div>
       <div className="question-container">
-        <h2>{question}</h2>
+        <h2>{questionData.question}</h2>
         <div className="options">
-          {options.map((option, index) => (
+          {questionData.options.map((option, index) => (
             <button
               key={index}
               className="option-btn"

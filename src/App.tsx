@@ -29,7 +29,7 @@ function App() {
   const [activationCode, setActivationCode] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState<boolean>(true);
 
-  const totalQuestions = 8;
+  const totalQuestions = 60;
 
   // 页面加载时验证激活码
   useEffect(() => {
@@ -333,7 +333,6 @@ function App() {
         {screen === 'result' && (
           <ResultScreen
             personalityType={personalityType}
-            onRestart={handleRestart}
           />
         )}
         <div className="card-watermark">@潜学天下</div>

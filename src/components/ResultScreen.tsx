@@ -6,12 +6,10 @@ import './ResultScreen.css';
 
 interface ResultScreenProps {
   personalityType: PersonalityType;
-  onRestart: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   personalityType,
-  onRestart,
 }) => {
   const { t } = useTranslation();
   
@@ -24,10 +22,26 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
     <div className="result-screen">
       <h1>{t('result.title')}</h1>
       
-      {/* 角色展示区 */}
-      <div className="character-showcase" style={{ background: colors.gradient }}>
-        <div className="character-icon">{character}</div>
-        <div className="result-type-large">{personalityType}</div>
+      {/* SVG Banner */}
+      <div className="personality-banner">
+        <img 
+          src={`/assets/${personalityType}.svg`} 
+          alt={`${personalityType} personality banner`}
+          className="banner-image"
+          onError={(e) => {
+            // Fallback to character showcase if SVG not found
+            e.currentTarget.style.display = 'none';
+            const fallback = document.querySelector('.character-showcase-fallback');
+            if (fallback) {
+              (fallback as HTMLElement).style.display = 'flex';
+            }
+          }}
+        />
+        {/* Fallback character showcase */}
+        <div className="character-showcase-fallback" style={{ background: colors.gradient, display: 'none' }}>
+          <div className="character-icon">{character}</div>
+          <div className="result-type-large">{personalityType}</div>
+        </div>
       </div>
 
       {/* 性格标签 */}
@@ -53,6 +67,18 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         </h3>
         <p className="personality-desc">{t(`personalities.${personalityType}.description`)}</p>
         
+        {/* 生活攻略 */}
+        {t(`personalities.${personalityType}.lifeGuide`, { defaultValue: '' }) && (
+          <div className="life-guide-section">
+            <h3 className="section-title">📖 你的专属生活攻略</h3>
+            <div className="life-guide-content">
+              {t(`personalities.${personalityType}.lifeGuide`).split('\n\n').map((paragraph, index) => (
+                <p key={index} className="guide-paragraph">{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        )}
+        
         {/* 特质详情 */}
         <div className="traits-section">
           <h3 className="section-title">{t('result.yourTraits')}</h3>
@@ -70,9 +96,6 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         </div>
       </div>
 
-      <button className="btn" onClick={onRestart} style={{ background: colors.gradient }}>
-        {t('result.button')}
-      </button>
     </div>
   );
 };
