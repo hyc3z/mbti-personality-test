@@ -30,10 +30,57 @@ function App() {
 
   const totalQuestions = 60;
 
-  // 页面加载时验证激活码
+  // 检查是否为测试模式
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isTestMode = urlParams.get('test') === 'true';
+    const testType = urlParams.get('type') as PersonalityType;
+
+    // 安全检查：只在localhost环境下允许测试模式
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname === '';
+
+    if (isTestMode && testType && isLocalhost) {
+      // 测试模式：直接跳转到结果页
+      console.log('🧪 测试模式激活:', testType);
+      setPersonalityType(testType);
+      setScreen('result');
+      setIsActivated(true);
+      setIsValidating(false);
+      
+      // 生成模拟答案数据
+      const mockAnswers = generateMockAnswers(testType);
+      setAnswers(mockAnswers);
+      return;
+    }
+
+    // 正常模式：验证激活码
     validateActivation();
   }, []);
+
+  // 生成模拟答案数据
+  const generateMockAnswers = (type: PersonalityType): Answers => {
+    const traits = type.split('');
+    const answers: Answers = {
+      E: 0, I: 0, N: 0, S: 0, T: 0, F: 0, J: 0, P: 0
+    };
+
+    // 为每个维度生成合理的分数（总和为15）
+    answers[traits[0] as 'E' | 'I'] = Math.floor(Math.random() * 5) + 8; // 8-12
+    answers[traits[0] === 'E' ? 'I' : 'E'] = 15 - answers[traits[0] as 'E' | 'I'];
+
+    answers[traits[1] as 'N' | 'S'] = Math.floor(Math.random() * 5) + 8;
+    answers[traits[1] === 'N' ? 'S' : 'N'] = 15 - answers[traits[1] as 'N' | 'S'];
+
+    answers[traits[2] as 'T' | 'F'] = Math.floor(Math.random() * 5) + 8;
+    answers[traits[2] === 'T' ? 'F' : 'T'] = 15 - answers[traits[2] as 'T' | 'F'];
+
+    answers[traits[3] as 'J' | 'P'] = Math.floor(Math.random() * 5) + 8;
+    answers[traits[3] === 'J' ? 'P' : 'J'] = 15 - answers[traits[3] as 'J' | 'P'];
+
+    return answers;
+  };
 
   const validateActivation = async () => {
     setIsValidating(true);
